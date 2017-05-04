@@ -31,6 +31,10 @@ basicMappableSuite =
                     |> Mappable.map (Mappable.dict) (\( k, v ) -> String.length v)
                     |> Dict.toList
                     |> Expect.equal [ ( "Lennon", 4 ), ( "Starr", 5 ) ]
+        , test "flap" <|
+            \_ ->
+                Mappable.flap Mappable.list [ String.reverse, (String.repeat 3) ] "Hello Generics!"
+                    |> Expect.equal [ "!scireneG olleH", "Hello Generics!Hello Generics!Hello Generics!" ]
         ]
 
 

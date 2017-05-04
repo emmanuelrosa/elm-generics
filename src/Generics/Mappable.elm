@@ -7,6 +7,7 @@ module Generics.Mappable
         , array
         , dict
         , map
+        , flap
         )
 
 {-| This module provides a generic `Mappable` interface. You can use this to create mapping functions once, and re-use them transparently across many types; hence without having to reimplement the functions!
@@ -81,7 +82,7 @@ This module provides `Mappable` implementations for Elm core types, to which suc
 @docs maybe, result, list, array, dict
 
 # Core functions
-@docs map
+@docs map, flap
 
 # Custom implementations
 
@@ -183,3 +184,18 @@ It works just like Elm's `List.map`, `Maybe.map`, etc. Except you need to provid
 map : Mappable mappableA a b mappableB -> (a -> b) -> mappableA -> mappableB
 map (Impl impl) function mappable =
     impl function mappable
+
+
+{-| Calls a function contained within a `Mappable` with a value, and returns a `Mappable` with the output of the function.
+
+A weird one, I know. Here's an example:
+
+    flap list [String.reverse, (String.repeat 3)] "Hello Generics!"
+
+Which results in...
+
+    ["!scireneG olleH","Hello Generics!Hello Generics!Hello Generics!"]
+-}
+flap : Mappable mappableA (a -> b) b mappableB -> mappableA -> a -> mappableB
+flap impl mappable a =
+    map impl (\f -> f a) mappable
