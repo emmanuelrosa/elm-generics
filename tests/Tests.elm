@@ -38,8 +38,20 @@ basicMappableSuite =
         ]
 
 
+functorLaws =
+    describe "Tests the functor laws with Mappable"
+        [ fuzz (list string) "Tests functor composition: map (g . f) == map g . map f" <|
+            \xs ->
+                Mappable.map Mappable.list (String.left 1 >> String.reverse) xs
+                    |> Expect.equal ((Mappable.map Mappable.list (String.left 1) >> Mappable.map Mappable.list String.reverse) xs)
+        , fuzz (list string) "Tests identity: map id == id" <|
+            \xs -> Mappable.map Mappable.list identity xs |> Expect.equal (identity xs)
+        ]
+
+
 all : Test
 all =
     describe "All Generics tests"
         [ basicMappableSuite
+        , functorLaws
         ]
